@@ -1,12 +1,6 @@
 def dot(m1, m2):
-    for i in range(len(m1)):
-        for j in range(len(m1[0])):
-            if(m1[i][j] != 0 and m1[i][j] != 1):
-                raise ValueError("m1 is not a binary matrix")
-    for i in range(len(m2)):
-        for j in range(len(m2[0])):
-            if(m2[i][j] != 0 and m2[i][j] != 1):
-                raise ValueError("m2 is not a binary matrix")
+    check_binary(m1)
+    check_binary(m2)
     if(len(m1[0]) != len(m2)):
         raise ValueError("m1 and m2 are not compatible")
     result = []
@@ -33,10 +27,7 @@ def identity(n):
     return result
 
 def transpose(m1):
-    for i in range(len(m1)):
-        for j in range(len(m1[0])):
-            if(m1[i][j] != 0 and m1[i][j] != 1):
-                raise ValueError("m1 is not a binary matrix")
+    check_binary(m1)
     result = []
     for i in range(len(m1[0])):
         row = []
@@ -45,9 +36,22 @@ def transpose(m1):
         result.append(row)
     return result
 
+def get_var_name(var):
+    for k,v in globals().items():
+        if id(v) == id(var):
+            name=k
+    return name
+
+def check_binary(m):
+    for i in range(len(m)):
+        for j in range(len(m[0])):
+            if(m[i][j] != 0 and m[i][j] != 1):
+                raise ValueError(get_var_name(m) + " is not a binary matrix")
 
 a = [[1,0,1],[0,1,0]]
 b = [[1,0],[1,0],[1,0]]
+c = [[1,0,1],[0,1,0],[1,3,1]]
 # print(dot(a,b))
 # print(identity(3))
 # print(transpose(a))
+# print(transpose(c))
