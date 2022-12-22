@@ -36,6 +36,39 @@ def transpose(m1):
         result.append(row)
     return result
 
+def concatenate_row(m1,m2):
+    check_binary(m1)
+    check_binary(m2)
+    if(len(m1) != len(m2)):
+        raise ValueError("m1 and m2 are not compatible")
+    result = []
+    for i in range(len(m1)):
+        row = []
+        for j in range(len(m1[0])):
+            row.append(m1[i][j])
+        for j in range(len(m2[0])):
+            row.append(m2[i][j])
+        result.append(row)
+    return result
+
+def concatenate_column(m1,m2):
+    check_binary(m1)
+    check_binary(m2)
+    if(len(m1[0]) != len(m2[0])):
+        raise ValueError("m1 and m2 are not compatible")
+    result = []
+    for i in range(len(m1)):
+        row = []
+        for j in range(len(m1[0])):
+            row.append(m1[i][j])
+        result.append(row)
+    for i in range(len(m2)):
+        row = []
+        for j in range(len(m2[0])):
+            row.append(m2[i][j])
+        result.append(row)
+    return result
+
 def get_var_name(var):
     for k,v in globals().items():
         if id(v) == id(var):
@@ -55,3 +88,5 @@ c = [[1,0,1],[0,1,0],[1,3,1]]
 # print(identity(3))
 # print(transpose(a))
 # print(transpose(c))
+print(concatenate_row(a,identity(2)))
+print(concatenate_column(a,identity(3)))
