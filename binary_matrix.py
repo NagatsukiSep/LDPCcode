@@ -81,12 +81,36 @@ def check_binary(m):
             if(m[i][j] != 0 and m[i][j] != 1):
                 raise ValueError(get_var_name(m) + " is not a binary matrix")
 
+def partial_matrix(m, r_start, r_end, c_start, c_end):
+    check_binary(m)
+    result = []
+    for i in range(c_start, c_end+1):
+        row = []
+        for j in range(r_start, r_end+1):
+            row.append(m[i][j])
+        result.append(row)
+    return result
+    
+
+def generator(H):
+    check_binary(H)
+    G = concatenate_row(identity(len(H[0])-len(H)),transpose(partial_matrix(H,0,len(H[0])-len(H)-1,0,len(H)-1)))
+    return G
+
+
+# def encode(x,H):
+#     check_binary(x)
+#     check_binary(H)
+#     G = generator_matrix(7,4)
+#     return dot(G,x)
+
 a = [[1,0,1],[0,1,0]]
 b = [[1,0],[1,0],[1,0]]
-c = [[1,0,1],[0,1,0],[1,3,1]]
+c = [[1,0,1],[0,1,0],[1,0,1]]
 # print(dot(a,b))
 # print(identity(3))
 # print(transpose(a))
 # print(transpose(c))
-print(concatenate_row(a,identity(2)))
-print(concatenate_column(a,identity(3)))
+# print(concatenate_row(a,identity(len(a))))
+# print(concatenate_column(a,identity(3)))
+# print(partial_matrix(c,0,2,1,2))
