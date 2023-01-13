@@ -1,3 +1,5 @@
+import random
+
 def dot(m1, m2):
     check_binary(m1)
     check_binary(m2)
@@ -97,6 +99,43 @@ def generator(H):
     G = concatenate_row(identity(len(H[0])-len(H)),transpose(partial_matrix(H,0,len(H[0])-len(H)-1,0,len(H)-1)))
     return G
 
+def echelon(H):
+    check_binary(H)
+    r = 0
+    i = 0
+    while i < len(H):
+        if r >= len(H[0]):
+            break
+        if H[i][r]!=1:
+            for j in range(i+1,len(H)):
+                if H[j][r] == 1:
+                    for k in range(len(H[0])):
+                        H[i][k]^=H[j][k]
+                    i+=1
+                    break
+            i-=1
+        for j in range(len(H)):
+            if i != j and H[j][r] == 1:
+                for k in range(len(H[0])):
+                    H[j][k] ^= H[i][k]
+        r +=1
+        i +=1
+    return H
+
+def random_matrix(n,m):
+    result = []
+    for i in range(n):
+        row = []
+        for j in range(m):
+            row.append(random.randrange(0,2))
+        result.append(row)
+    return result
+
+def display(H):
+    for i in range(len(H)):
+        for j in range(len(H[0])):
+            print(H[i][j], end="")
+        print("\n", end="")
 
 # def encode(x,H):
 #     check_binary(x)
@@ -106,7 +145,8 @@ def generator(H):
 
 a = [[1,0,1],[0,1,0]]
 b = [[1,0],[1,0],[1,0]]
-c = [[1,0,1],[0,1,0],[1,0,1]]
+c = [[1,0,1],[1,0,1],[1,0,0]]
+d = [[0,1,1,0,0,0,0,1,1,0,0,1,0],[],[]]
 # print(dot(a,b))
 # print(identity(3))
 # print(transpose(a))
@@ -114,3 +154,4 @@ c = [[1,0,1],[0,1,0],[1,0,1]]
 # print(concatenate_row(a,identity(len(a))))
 # print(concatenate_column(a,identity(3)))
 # print(partial_matrix(c,0,2,1,2))
+display(echelon(random_matrix(4,7)))
