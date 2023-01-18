@@ -102,24 +102,21 @@ def generator(H):
 def echelon(H):
     check_binary(H)
     r = 0
-    i = 0
-    while i < len(H):
-        if r >= len(H[0]):
-            break
-        if H[i][r]!=1:
-            for j in range(i+1,len(H)):
-                if H[j][r] == 1:
+    c = 0
+    while r < len(H) and c < len(H[0]):
+        if H[r][c] == 0:
+            for j in range(r+1,len(H)):
+                if H[j][c] == 1:
                     for k in range(len(H[0])):
-                        H[i][k]^=H[j][k]
-                    i+=1
+                        H[r][k]^=H[j][k]
                     break
-            i-=1
-        for j in range(len(H)):
-            if i != j and H[j][r] == 1:
-                for k in range(len(H[0])):
-                    H[j][k] ^= H[i][k]
-        r +=1
-        i +=1
+        if H[r][c] == 1:
+            for j in range(len(H)):
+                if j != r and H[j][c] == 1:
+                    for k in range(len(H[0])):
+                        H[j][k] ^= H[r][k]
+            r +=1
+        c +=1
     return H
 
 def random_matrix(n,m):
