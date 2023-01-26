@@ -119,7 +119,86 @@ def echelon(H):
         c +=1
     return H
 
+def unit_vec(n,pos):
+    result = []
+    for i in range(n):
+        if i == pos:
+            result.append([1])
+        else:
+            result.append([0])
+    return transpose(result)
+
+def rank(H):
+    check_binary(H)
+    echelon(H)
+    rank = 0
+    for i in range(len(H)):
+        for j in range(len(H[0])):
+            if H[i][j] == 1:
+                rank += 1
+                break
+    return rank
+
+def generator(H):
+    check_binary(H)
+    _rank = rank(H)
+    full_ranked = partial_matrix(echelon(H),0,len(H[0])-1,0,_rank-1)
+    count = 0
+    tmp = None
+    for i in range(len(full_ranked[0])):
+        if partial_matrix(full_ranked,i,i,0,len(full_ranked)-1) == transpose(unit_vec(len(full_ranked),count)):
+            count += 1
+        else:
+            if tmp == None:
+                tmp = partial_matrix(full_ranked,i,i,0,len(full_ranked)-1)
+            else:
+                tmp = concatenate_row(tmp,partial_matrix(full_ranked,i,i,0,len(full_ranked)-1))
+    G = None
+    ele_count = 0
+    tmp_count = 0
+    for i in range(len(full_ranked[0])):
+        if partial_matrix(full_ranked,i,i,0,len(full_ranked)-1) == transpose(unit_vec(len(full_ranked),ele_count)):
+            if G == None:
+                G = partial_matrix(transpose(tmp),ele_count,ele_count,0,len(transpose(tmp))-1)
+            else:
+                G = concatenate_row(G,partial_matrix(transpose(tmp),ele_count,ele_count,0,len(transpose(tmp))-1))
+            ele_count += 1
+        else:
+            if G == None:
+                G = transpose(unit_vec(len(transpose(tmp)),tmp_count))
+            else:
+                G = concatenate_row(G,transpose(unit_vec(len(transpose(tmp)),tmp_count)))
+            tmp_count += 1
+    return G
+
+
+
 def random_matrix(n,m):
+    seed = random.randint(0,100000)
+    random.seed(seed)
+    result = []
+    for i in range(n):
+        row = []
+        for j in range(m):
+            row.append(random.randrange(0,2))
+        result.append(row)
+    if(check_valid(result)):
+        print("seed: " + str(seed))
+        return result
+    else:
+        return random_matrix(n,m)
+
+def check_valid(H):
+    for i in range(len(H[0])):
+        tmp = 0
+        for j in range(len(H)):
+            tmp = H[j][i] or tmp
+        if tmp == 0:
+            return False
+    return True
+
+def random_matrix_seed(n,m,seed):
+    random.seed(seed)
     result = []
     for i in range(n):
         row = []
@@ -129,6 +208,9 @@ def random_matrix(n,m):
     return result
 
 def display(H):
+    if H == None:
+        print("None")
+        return
     for i in range(len(H)):
         for j in range(len(H[0])):
             print(H[i][j], end="")
@@ -151,4 +233,14 @@ d = [[0,1,1,0,0,0,0,1,1,0,0,1,0],[],[]]
 # print(concatenate_row(a,identity(len(a))))
 # print(concatenate_column(a,identity(3)))
 # print(partial_matrix(c,0,2,1,2))
-display(echelon(random_matrix(4,7)))
+hoge = random_matrix(4,7)
+# hoge = random_matrix_seed(4,7,49078)
+display(hoge)
+print()
+print(rank(hoge))
+display(echelon(hoge))
+print()
+display(generator(hoge))
+print()
+display(dot(generator(hoge),transpose(echelon(hoge))))
+# display(transpose(unit_vec(4,0)))
